@@ -15,9 +15,9 @@ app.use(cors());
 
 // MySQL connection
 const db = mysql.createConnection({
-  host: "mysql.railway.internal",
+  host: "mysql-9ddv.railway.internal",
   user: "root",
-  password: "uTPnyHwtcakUrIEajUvICmEQgeSJZYkG",
+  password: "pdJvHEAXBjRsTmJkyhqABKxolaSenlOT",
   database: "waitlist_db",
 });
 
