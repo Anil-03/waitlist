@@ -1,25 +1,20 @@
-// server.js
 const express = require("express");
 const mysql = require("mysql2");
-const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
-require('dotenv').config(); // This reads the .env file
+require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Serve static files
 app.use(express.static(path.join(__dirname, "public")));
-app.use(bodyParser.json());
-app.use(cors({
-  origin:"waitlist-production-cc6f.up.railway.app"
-}));
+app.use(express.json());
 
+// ✅ Allow all origins temporarily
+app.use(cors());
 
-// MySQL connection
-const dbUrl = new URL(process.env.MYSQL_URL); 
-
+// ✅ MySQL connection
+const dbUrl = new URL(process.env.MYSQL_URL);
 const db = mysql.createConnection({
   host: dbUrl.hostname,
   user: dbUrl.username,
@@ -33,7 +28,7 @@ db.connect((err) => {
   console.log("MySQL Connected...");
 });
 
-// Create table if not exists
+// ✅ Create table
 const tableQuery = `
   CREATE TABLE IF NOT EXISTS waitlist (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,10 +39,9 @@ const tableQuery = `
 `;
 db.query(tableQuery);
 
-// API endpoint
+// ✅ Route
 app.post("/api/waitlist", (req, res) => {
   const { name, email } = req.body;
-
   if (!name || !email) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -58,6 +52,7 @@ app.post("/api/waitlist", (req, res) => {
       if (err.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ message: "You're already enrolled!" });
       }
+      console.error(err);
       return res.status(500).json({ message: "Server error" });
     }
     res.status(200).json({ message: "Successfully enrolled! We'll update you soon." });
@@ -65,5 +60,5 @@ app.post("/api/waitlist", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
