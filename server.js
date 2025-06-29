@@ -5,13 +5,17 @@ const cors = require("cors");
 require('dotenv').config();
 
 const app = express();
-const port =3000;
+const port =process.env.port || 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 // ✅ Allow all origins temporarily
-app.use(cors());
+app.use(cors({
+  origin:"https://waitlist-production-cc6f.up.railway.app/"
+}
+  
+));
 
 // ✅ MySQL connection
 const dbUrl = new URL(process.env.MYSQL_URL);
