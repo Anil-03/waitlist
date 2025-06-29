@@ -4,6 +4,7 @@ const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
+require('dotenv').config(); // This reads the .env file
 
 const app = express();
 const port = 3000;
@@ -14,13 +15,14 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // MySQL connection
-
+const dbUrl = new URL(process.env.MYSQL_URL); 
 
 const db = mysql.createConnection({
-  host: "mysql.railway.internal",
-  user: "root",
-  password: "zdRtYubbTftKSxcznHWlvdNTzhQtWaJb",
-  database: "railway"
+  host: dbUrl.hostname,
+  user: dbUrl.username,
+  password: dbUrl.password,
+  database: dbUrl.pathname.replace('/', ''),
+  port: dbUrl.port,
 });
 
 db.connect((err) => {
