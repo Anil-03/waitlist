@@ -12,7 +12,10 @@ const port = 3000;
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin:"waitlist-production-cc6f.up.railway.app"
+}));
+
 
 // MySQL connection
 const dbUrl = new URL(process.env.MYSQL_URL); 
